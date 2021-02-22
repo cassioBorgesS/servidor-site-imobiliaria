@@ -6,6 +6,9 @@ const router = require('./rotas')
 
 const tabelas = require('./database/Tabelas')
 tabelas.criaTabelas()
+require('./redis/blocklist')
+
+const {estrategiasAutenticacao} = require('./autenticacao')
 
 const app = express()
 app.use(bodyParser.json())

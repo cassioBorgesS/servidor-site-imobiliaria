@@ -20,12 +20,6 @@ class Tabelas {
             )`
         )
         await dbRun(`
-            CREATE TABLE if not exists usuarios (
-            login VARCHAR(50) PRIMARY KEY not null,
-            senha VARCHAR(20) not null
-            );
-        `)
-        await dbRun(`
             CREATE TABLE if not exists mensagens (
             mensagem VARCHAR(2000) not null,
             nome_usuario VARCHAR(50) not null,

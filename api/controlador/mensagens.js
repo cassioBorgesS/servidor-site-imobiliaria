@@ -1,5 +1,4 @@
 const { mensagens } = require("../modelos");
-const { busca, deleta } = require("./imagens");
 
 module.exports = {
     async adiciona(req,res){
