@@ -1,5 +1,5 @@
-const { JsonWebTokenError } = require('jsonwebtoken')
 const passport = require('passport')
+const tokens = require('./tokens')
 
 module.exports = {
     local: (req,res,next) => {
@@ -43,5 +43,21 @@ module.exports = {
                 return next()
             }
         )(req,res,next)
+    },
+    refresh: async (req,res,next) =>{
+        try {
+            const {refreshToken} = req.body
+            await tokens.refresh.verifica(refreshToken)
+            await tokens.refresh.invalida(refreshToken)
+
+            return next()
+        } catch (erro) {
+            if(erro && erro.name == 'InvalidArgumentError'){
+                res.status(401).json({erro: erro.message})
+            }
+            if(erro) {
+                res.status(500).json({erro: erro.message})
+            }
+        }
     }
 }

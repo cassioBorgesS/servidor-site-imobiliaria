@@ -1,12 +1,12 @@
 const bcrypt = require('bcrypt')
 const tokens = require('./tokens')
-const blocklist = require('../redis/manipula-blocklist')
 
 module.exports = {
     async login(req,res){
-        const token = tokens.criaTokenJWT(req.user)
-        res.set('Authorization', token)
-        res.status(204).json()
+        const accessToken = tokens.access.cria(req.user)
+        const refreshToken = await tokens.refresh.cria(req.user)
+        res.set('Authorization', accessToken)
+        res.status(200).json({refreshToken: refreshToken})
     },
     async gerarSenhaHash(senha){
         const custoHash = 12
@@ -15,7 +15,7 @@ module.exports = {
     async logout(req,res){
         try {
             const token = req.token
-            await blocklist.adiciona(token)
+            await tokens.access.invalida(token)
             res.status(204).json()
         } catch (erro) {
             res.status(500).json({erro: erro.message})

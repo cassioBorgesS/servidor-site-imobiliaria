@@ -7,6 +7,7 @@ const router = require('./rotas')
 const tabelas = require('./database/Tabelas')
 tabelas.criaTabelas()
 require('./redis/blocklist')
+require('./redis/allowlist')
 
 const {estrategiasAutenticacao} = require('./autenticacao')
 

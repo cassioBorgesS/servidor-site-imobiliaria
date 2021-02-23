@@ -5,7 +5,6 @@ const tokens = require('./tokens')
 const jwt = require('jsonwebtoken')
 const { InvalidArgumentError } = require('../erros')
 const bcrypt = require('bcrypt')
-const blocklist = require('../redis/manipula-blocklist')
 
 function verificaLogin(login, user){
     if(login !== user.login){
@@ -18,13 +17,10 @@ async function verificaSenha(senha, senhaHash){
         throw new InvalidArgumentError('Usuario ou Senha invalidos!')
     }
 }
-async function verificaTokenNaBlocklist(token){
-    const verificaToken = await blocklist.verifica(token)
-    if(verificaToken){
-        throw new jwt.JsonWebTokenError('Token invalido por logout!')
-    }
-    return await blocklist.verifica(token)
+function verificaTokenJWT(token){
+    return jwt.verify(token, process.env.TOKEN_JWT)
 }
+
 
 passport.use(
     new localStartegy(
@@ -53,8 +49,8 @@ passport.use(
     new bearerStrategy(
         async (token, done) => {
             try{
-                await verificaTokenNaBlocklist(token)
-                const payload = tokens.verificaTokenJWT(token)
+                await tokens.access.verifica(token)
+                const payload = verificaTokenJWT(token)
                 done(null, payload, {token: token})
             } catch(erro) {
                 done(erro)

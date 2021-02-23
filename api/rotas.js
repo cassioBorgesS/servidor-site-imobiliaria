@@ -5,7 +5,7 @@ const multerConfig = require('./config/multer')
 const router = require('express').Router()
 
 // crud imoveis
-router.get('/imoveis',middlewaresAutenticacao.bearer, imoveis.lista)
+router.get('/imoveis', imoveis.lista)
 router.get('/imoveis/:id',imoveis.buscaUm)
 router.post('/imoveis',middlewaresAutenticacao.bearer,imoveis.adiciona)
 router.patch('/imoveis/:id',middlewaresAutenticacao.bearer,imoveis.atualiza)
@@ -25,7 +25,7 @@ router.delete('/mensagens/:id',middlewaresAutenticacao.bearer, mensagens.deleta)
 
 //autenticacao usuarios
 router.post('/usuario/login',middlewaresAutenticacao.local,usuario.login)
-router.get('/usuario/logout',middlewaresAutenticacao.bearer, usuario.logout)
-router.post('/usuario/atualizaToken')
+router.post('/usuario/logout',[middlewaresAutenticacao.bearer, middlewaresAutenticacao.refresh], usuario.logout)
+router.post('/usuario/atualizaToken', middlewaresAutenticacao.refresh, usuario.login)
 
 module.exports= router

@@ -6,7 +6,7 @@ class Tabelas {
     async criaTabelas(){
         await dbRun(`
             CREATE TABLE if not exists imoveis (
-            cep VARCHAR(9) not null,
+            cep VARCHAR(8) not null,
             titulo VARCHAR(40) not null,
             id INTEGER PRIMARY KEY,
             area INTEGER,
