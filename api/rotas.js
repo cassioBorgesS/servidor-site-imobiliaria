@@ -1,31 +1,35 @@
 const multer = require('multer')
-const {imoveis, imagens, mensagens} = require('./controlador')
+const {imoveis, imagens, mensagens, clientes} = require('./controlador')
 const {usuario, middlewaresAutenticacao} = require('./autenticacao')
 const multerConfig = require('./config/multer')
 const router = require('express').Router()
-
 // crud imoveis
-router.get('/imoveis', imoveis.lista)
-router.get('/imoveis/:id',imoveis.buscaUm)
-router.post('/imoveis',middlewaresAutenticacao.bearer,imoveis.adiciona)
-router.patch('/imoveis/:id',middlewaresAutenticacao.bearer,imoveis.atualiza)
-router.delete('/imoveis/:id',middlewaresAutenticacao.bearer,imoveis.deleta)
+router.get('/api/imoveis', imoveis.lista)
+router.get('/api/imoveis/:id',imoveis.buscaUm)
+router.post('/api/imoveis',middlewaresAutenticacao.bearer,imoveis.adiciona)
+router.patch('/api/imoveis/:id',middlewaresAutenticacao.bearer,imoveis.atualiza)
+router.delete('/api/imoveis/:id',middlewaresAutenticacao.bearer,imoveis.deleta)
 
 // cr imagens
-router.get('/imagens/:id',imagens.busca)
-router.get('/imagens',imagens.buscaPrincipais)
-router.post('/imagens/:id',[middlewaresAutenticacao.bearer,multer(multerConfig).single('file')],imagens.adiciona)
+router.get('/api/imagens/:id',imagens.busca)
+router.get('/api/imagens',imagens.buscaPrincipais)
+router.post('/api/imagens/:id',[middlewaresAutenticacao.bearer,multer(multerConfig).single('file')],imagens.adiciona)
 
 // crd mensagens
-router.get('/mensagens/porimovel/:id',middlewaresAutenticacao.bearer, mensagens.buscaPorImovel)
-router.get('/mensagens/porid/:id',middlewaresAutenticacao.bearer, mensagens.buscaPorId)
-router.get('/mensagens',middlewaresAutenticacao.bearer, mensagens.busca)
-router.post('/mensagens/:id',mensagens.adiciona)
-router.delete('/mensagens/:id',middlewaresAutenticacao.bearer, mensagens.deleta)
+router.get('/api/mensagens/porimovel/:id',middlewaresAutenticacao.bearer, mensagens.buscaPorImovel)
+router.get('/api/mensagens/porid/:id',middlewaresAutenticacao.bearer, mensagens.buscaPorId)
+router.get('/api/mensagens',middlewaresAutenticacao.bearer, mensagens.busca)
+router.post('/api/mensagens/:id',mensagens.adiciona)
+router.delete('/api/mensagens/:id',middlewaresAutenticacao.bearer, mensagens.deleta)
+
+//crd clientes
+router.get('/api/clientes', middlewaresAutenticacao.bearer, clientes.busca)
+router.post('/api/clientes', clientes.cria)
+router.delete('/api/clientes/:id', middlewaresAutenticacao.bearer, clientes.deleta)
 
 //autenticacao usuarios
-router.post('/usuario/login',middlewaresAutenticacao.local,usuario.login)
-router.post('/usuario/logout',[middlewaresAutenticacao.bearer, middlewaresAutenticacao.refresh], usuario.logout)
-router.post('/usuario/atualizaToken', middlewaresAutenticacao.refresh, usuario.login)
+router.post('/api/usuario/login',middlewaresAutenticacao.local,usuario.login)
+router.post('/api/usuario/logout',[middlewaresAutenticacao.bearer, middlewaresAutenticacao.refresh], usuario.logout)
+router.post('/api/usuario/atualizaToken',[middlewaresAutenticacao.bearer, middlewaresAutenticacao.refresh], usuario.login)
 
 module.exports= router

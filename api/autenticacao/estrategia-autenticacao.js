@@ -2,7 +2,6 @@ const passport = require('passport')
 const localStartegy = require('passport-local').Strategy
 const bearerStrategy = require('passport-http-bearer').Strategy
 const tokens = require('./tokens')
-const jwt = require('jsonwebtoken')
 const { InvalidArgumentError } = require('../erros')
 const bcrypt = require('bcrypt')
 
@@ -16,9 +15,6 @@ async function verificaSenha(senha, senhaHash){
     if(!verificacao){
         throw new InvalidArgumentError('Usuario ou Senha invalidos!')
     }
-}
-function verificaTokenJWT(token){
-    return jwt.verify(token, process.env.TOKEN_JWT)
 }
 
 
@@ -49,8 +45,8 @@ passport.use(
     new bearerStrategy(
         async (token, done) => {
             try{
-                await tokens.access.verifica(token)
-                const payload = verificaTokenJWT(token)
+                await tokens.access.verifica.blocklist(token)
+                const payload = tokens.access.verifica.JWT(token)
                 done(null, payload, {token: token})
             } catch(erro) {
                 done(erro)

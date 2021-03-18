@@ -1,4 +1,4 @@
-const {imoveis} = require('./../modelos')
+const {imoveis} = require('../modelos')
 const imagens = require('./imagens')
 
 module.exports = {

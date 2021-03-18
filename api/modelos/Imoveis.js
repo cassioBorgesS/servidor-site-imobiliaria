@@ -10,15 +10,10 @@ class Imoveis{
     async criaImovel(req){
         const criado_em = moment().format("YYYY-MM-DD hh:mm:ss")
         const modificado_em = moment().format("YYYY-MM-DD hh:mm:ss")
-        const {cep ,titulo, area ,quartos ,descricao,preco,garagem} = req.body
+        const {cep ,titulo, area ,quartos ,descricao,preco,garagem, modo} = req.body
         
-        const sql = 'insert into imoveis values(?,?,?,?,?,?,?,?,?,?,?);'
-        if(cep.length < 8){
-            throw new InvalidArgumentError('cep invalido')
-        }
-        if (!titulo||!descricao||!preco) {
-            throw new InvalidArgumentError('campo vazio')
-        }
+        const sql = 'insert into imoveis values(?,?,?,?,?,?,?,?,?,?,?,?);'
+        this.verificaImovelValido(req)
         try {
             await dbRun(
                 sql,
@@ -33,10 +28,14 @@ class Imoveis{
                     preco,
                     modificado_em,
                     preco,
-                    garagem
+                    garagem,
+                    modo
                 ]
             )
         } catch (erro) {
+            if(erro.name == 'InvalidArgumentError'){
+                return erro
+            }
             throw new Error('Não foi possivel adicionar à database')
         }
     }
@@ -51,7 +50,8 @@ class Imoveis{
     }
     async atualizaImovel(req,res){
         const modificado_em = moment().format("YYYY-MM-DD hh:mm:ss")
-        const {cep,titulo,area,quartos,descricao,preco,garagem} = req.body
+        const {cep,titulo,area,quartos,descricao,preco,garagem,modo} = req.body
+        this.verificaImovelValido(req)
         return await dbRun(
             `update imoveis set 
             cep = ?, 
@@ -61,9 +61,10 @@ class Imoveis{
             descricao=?,
             preco_atual=?,
             modificado_em=?,
-            garagem=? 
+            garagem=?,
+            modo_negocio=? 
             where id = ?;`,
-            [cep,titulo,area,quartos,descricao,preco,modificado_em,garagem,req.params.id]
+            [cep,titulo,area,quartos,descricao,preco,modificado_em,garagem,modo,req.params.id]
         )
     }
     async deletaImovel(req,res){
@@ -72,6 +73,22 @@ class Imoveis{
             'delete from imoveis where id = ?',
             [req.params.id]
         )
+    }
+    verificaImovelValido(req){
+        const {cep ,titulo ,descricao,preco, modo} = req.body
+        if(cep.length < 8){
+            throw new InvalidArgumentError('cep invalido')
+        }
+        if (!titulo||!descricao||!preco) {
+            throw new InvalidArgumentError('campo vazio')
+        }
+        if(modo == 'v' && preco < 5000){
+            throw new InvalidArgumentError('preço abaixo do esperado')
+        }
+        const modosValidos = ['v', 'a']
+        if(!modosValidos.includes(modo)){
+            throw new InvalidArgumentError('modo de negócio invalido')
+        }
     }
 }
 

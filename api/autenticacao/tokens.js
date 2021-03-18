@@ -7,11 +7,14 @@ const {InvalidArgumentError} = require('../erros')
 
 function criaTokenJWT(usuario){
     const payload = {
-        usuario: usuario.login
+        login: usuario.login
     }
     return jwt.sign(payload, process.env.TOKEN_JWT, {expiresIn: '15m'})
 }
 async function verificaTokenNaBlocklist(token){
+    if(!token){
+        throw new jwt.JsonWebTokenError('Token não enviado!')
+    }
     const verificaToken = await blocklist.verifica(token)
     if(verificaToken){
         throw new jwt.JsonWebTokenError('Token invalido por logout!')
@@ -46,8 +49,9 @@ module.exports = {
         cria(usuario){
             return criaTokenJWT(usuario)
         },
-        verifica(token){
-            return verificaTokenNaBlocklist(token)
+        verifica:{
+            blocklist(token){return verificaTokenNaBlocklist(token)},
+            JWT(token){return jwt.verify(token, process.env.TOKEN_JWT)}
         },
         invalida(token){
             return invalidaTokenJWT(token)

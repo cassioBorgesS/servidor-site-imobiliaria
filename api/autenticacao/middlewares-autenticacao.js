@@ -26,14 +26,21 @@ module.exports = {
             'bearer',
             {session: false},
             (erro, usuario, info) => {
+                if(info.token == null){
+                    res.status(401).json({message: 'token não enviado'})
+                }
                 if(erro && erro.name == 'JsonWebTokenError' ){
                     return res.status(401).json({erro: erro.message})
                 }
                 if(erro && erro.name == 'TokenExpiredError'){
                     return res.status(401).json({erro: erro.message})
                 }
+                if(!usuario && usuario.name == 'JsonWebTokenError'){
+                    return res.status(401).json({message: 'token não enviado'})
+                }
                 if(!usuario){
-                    return res.status(401).json({erro: erro.message})
+                    console.log(tokens.access.verifica.JWT(info.token))
+                    return res.status(401).json({message: 'usuario invalido'})
                 }
                 if(erro){
                     return res.status(500).json({erro: erro.message})

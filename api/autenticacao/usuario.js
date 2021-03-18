@@ -3,6 +3,10 @@ const tokens = require('./tokens')
 
 module.exports = {
     async login(req,res){
+        const token = req.token
+        if(token){
+            await tokens.access.invalida(token)
+        }
         const accessToken = tokens.access.cria(req.user)
         const refreshToken = await tokens.refresh.cria(req.user)
         res.set('Authorization', accessToken)

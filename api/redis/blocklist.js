@@ -1,7 +1,5 @@
 const redis = require('redis')
-const blocklist = redis.createClient({
-    prefix: 'blocklist:'
-})
+const blocklist = redis.createClient(process.env.REDIS_URL,{prefix: 'blocklist:'})
 const manipulaLista = require('./manipula-lista')
 const manipulaBlocklist = manipulaLista(blocklist)
 

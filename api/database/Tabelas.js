@@ -16,14 +16,15 @@ class Tabelas {
             preco_atual INTEGER not null,
             modificado_em datetime not null,
             preco_inicial INTEGER not null,
-            garagem INTEGER
+            garagem INTEGER,
+            modo_negocio CHAR(1) not null
             )`
         )
         await dbRun(`
             CREATE TABLE if not exists mensagens (
             mensagem VARCHAR(2000) not null,
             nome_usuario VARCHAR(50) not null,
-            telefone_usuario VARCHAR(15),
+            telefone_usuario VARCHAR(11),
             id INTEGER PRIMARY KEY not null,
             criado_em datetime  not null,
             email_usuario VARCHAR(50),
@@ -39,7 +40,16 @@ class Tabelas {
             id_imovel INTEGER not null,
             FOREIGN KEY(id_imovel) REFERENCES imoveis (id)
             );
-        `,)
+        `)
+        await dbRun(`
+            CREATE TABLE if not exists clientes (
+            nome_usuario VARCHAR(50) not null,
+            telefone_usuario VARCHAR(11),
+            id INTEGER PRIMARY KEY not null,
+            criado_em datetime  not null,
+            email_usuario VARCHAR(50)
+            );
+        `)
     }
 }
 
