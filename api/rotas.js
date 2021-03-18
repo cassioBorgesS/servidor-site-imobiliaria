@@ -3,6 +3,9 @@ const {imoveis, imagens, mensagens, clientes} = require('./controlador')
 const {usuario, middlewaresAutenticacao} = require('./autenticacao')
 const multerConfig = require('./config/multer')
 const router = require('express').Router()
+
+router.get('/', (req,res) => res.status(200).json('use a rota api'))
+
 // crud imoveis
 router.get('/api/imoveis', imoveis.lista)
 router.get('/api/imoveis/:id',imoveis.buscaUm)
