@@ -25,4 +25,4 @@ app.use(bodyParser.urlencoded({extended:true}))
 app.use(cors(corsConfig))
 app.use(router)
 
-app.listen(3000, () => console.log("servidor rodando na porta 3000"))
+app.listen(process.env.PORT, () => console.log("servidor rodando na porta 3000"))
