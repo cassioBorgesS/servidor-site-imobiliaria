@@ -9,8 +9,10 @@ module.exports = {
         }
         const accessToken = tokens.access.cria(req.user)
         const refreshToken = await tokens.refresh.cria(req.user)
-        res.set('Authorization', accessToken)
-        res.status(200).json({refreshToken: refreshToken})
+        res.status(200).json({
+            refreshToken: refreshToken,
+            Authorization: accessToken
+        })
     },
     async gerarSenhaHash(senha){
         const custoHash = 12
