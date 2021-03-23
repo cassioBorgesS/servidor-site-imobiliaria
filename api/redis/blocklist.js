@@ -4,8 +4,7 @@ var blocklist;
 if (process.env.REDISTOGO_URL) {
     var rtg   = require("url").parse(process.env.REDISTOGO_URL);
     blocklist = require("redis").createClient(rtg.port, rtg.hostname,{prefix: 'blocklist:'});
-
-redis.auth(rtg.auth.split(":")[1]);
+    blocklist.auth(rtg.auth.split(":")[1]);
 } else {
     blocklist = require("redis").createClient({prefix: 'blocklist:'});
 }
